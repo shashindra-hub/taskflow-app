@@ -1,0 +1,24 @@
+{
+  "name": "taskflow-app",
+  "private": true,
+  "version": "1.0.0",
+  "description": "TaskFlow - a full-stack task manager with an automated CI pipeline (unit + integration tests)",
+  "type": "module",
+  "workspaces": [
+    "server",
+    "client",
+    "e2e"
+  ],
+  "scripts": {
+    "dev:server": "npm run dev --workspace server",
+    "dev:client": "npm run dev --workspace client",
+    "lint": "npm run lint --workspace server && npm run lint --workspace client",
+    "test:unit:server": "npm test --workspace server",
+    "test:unit:client": "npm test --workspace client",
+    "test:unit": "npm run test:unit:server && npm run test:unit:client",
+    "build": "npm run build --workspace client",
+    "test:e2e": "npm test --workspace e2e",
+    "test": "npm run test:unit && npm run build && npm run test:e2e"
+  },
+  "devDependencies": {}
+}
