@@ -7,8 +7,9 @@
   "scripts": {
     "dev": "node src/server.js",
     "start": "node src/server.js",
-    "lint": "eslint src tests",
-    "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --coverage"
+    "lint": "eslint src tests bin",
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --coverage",
+    "screener": "node bin/morning-screener.js"
   },
   "dependencies": {
     "cors": "^2.8.5",
