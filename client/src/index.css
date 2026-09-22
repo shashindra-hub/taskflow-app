@@ -12,3 +12,52 @@ body {
   background: #f5f6fa;
   color: #1f2430;
 }
+
+body[data-page='stocks'] {
+  background: #000;
+}
+
+.top-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  height: 44px;
+  padding: 0 1.25rem;
+  background: #0b0d12;
+  border-bottom: 1px solid #1f2430;
+}
+
+.top-nav-brand {
+  margin-right: 1rem;
+  color: #f3f4f6;
+  font-weight: 700;
+}
+
+.top-nav a {
+  padding: 0.35rem 0.75rem;
+  border-radius: 6px;
+  color: #9ca3af;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.top-nav a:hover {
+  color: #f3f4f6;
+}
+
+.top-nav a[aria-current='page'] {
+  background: #1f2430;
+  color: #f3f4f6;
+}
+
+.top-nav a:focus-visible {
+  outline: 2px solid #22c55e;
+  outline-offset: 2px;
+}
+
+.page-loading {
+  padding: 2rem;
+  color: #9ca3af;
+  text-align: center;
+}

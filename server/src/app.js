@@ -1,12 +1,19 @@
 import express from 'express';
 import cors from 'cors';
 import { taskStore as defaultStore, ValidationError } from './taskStore.js';
+import {
+  createStockService,
+  StockNotFoundError,
+  StockValidationError,
+  UpstreamError,
+} from './stocks.js';
 
 /**
- * Builds an Express app. Accepts an optional store so unit/integration tests
- * can inject a fresh, isolated TaskStore instead of sharing global state.
+ * Builds an Express app. Accepts an optional store and stock service so
+ * unit/integration tests can inject isolated fakes instead of sharing global
+ * state or calling the real market data provider.
  */
-export function createApp(store = defaultStore) {
+export function createApp(store = defaultStore, { stockService = createStockService() } = {}) {
   const app = express();
 
   app.use(cors());
@@ -67,9 +74,28 @@ export function createApp(store = defaultStore) {
     res.status(204).send();
   });
 
+  app.get('/api/stocks/search', async (req, res, next) => {
+    try {
+      res.json(await stockService.search(req.query.q));
+    } catch (err) {
+      next(err);
+    }
+  });
+
+  app.get('/api/stocks/:symbol/chart', async (req, res, next) => {
+    try {
+      res.json(await stockService.chart(req.params.symbol, req.query.range ?? '1D'));
+    } catch (err) {
+      next(err);
+    }
+  });
+
   // Centralized error handler as a safety net for anything unexpected.
   // eslint-disable-next-line no-unused-vars
   app.use((err, _req, res, _next) => {
+    if (err instanceof StockValidationError) return res.status(400).json({ error: err.message });
+    if (err instanceof StockNotFoundError) return res.status(404).json({ error: err.message });
+    if (err instanceof UpstreamError) return res.status(502).json({ error: err.message });
     console.error(err);
     res.status(500).json({ error: 'Internal server error' });
   });

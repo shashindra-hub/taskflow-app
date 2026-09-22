@@ -1,6 +1,6 @@
 const BASE_URL = '/api';
 
-async function handleResponse(res) {
+export async function handleResponse(res) {
   if (res.status === 204) return null;
   const data = await res.json().catch(() => null);
   if (!res.ok) {
