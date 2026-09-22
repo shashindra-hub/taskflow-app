@@ -2,6 +2,9 @@
 
 A small, fully functional full-stack task manager, built to showcase an automated
 code pipeline with unit tests, integration/E2E tests, and CI on every push/PR.
+It also has a **Stocks** page (`#/stocks`): search any ticker or company name
+with autocomplete and chart it from 1 day to MAX with MA(50), MA(200),
+Bollinger Bands (20, 2), volume and RSI(14).
 
 - **Backend**: Node.js + Express REST API (in-memory task store)
 - **Frontend**: React + Vite single-page app
@@ -17,10 +20,13 @@ taskflow-app/
 │   ├── src/
 │   │   ├── taskStore.js   In-memory data layer + validation
 │   │   ├── app.js         Express app / routes (exported for testing)
+│   │   ├── stocks.js      Yahoo Finance client: search, chart ranges, caching
+│   │   ├── indicators.js  SMA, Bollinger Bands, RSI
 │   │   └── server.js      Entry point (starts the HTTP server)
 │   └── tests/             Jest unit tests
 ├── client/            React + Vite frontend
 │   ├── src/               Components, API client, styles
+│   │   └── stocks/        Stocks page: search box, chart (lightweight-charts)
 │   └── tests/             Vitest + Testing Library unit tests
 ├── e2e/               Playwright integration/E2E tests
 │   └── tests/tasks.spec.js
@@ -87,6 +93,8 @@ npm test
 | PUT    | `/api/tasks/:id`         | Update a task                         |
 | PATCH  | `/api/tasks/:id/toggle`  | Toggle a task's completed state       |
 | DELETE | `/api/tasks/:id`         | Delete a task                         |
+| GET    | `/api/stocks/search?q=`  | Autocomplete stock symbols / names    |
+| GET    | `/api/stocks/:symbol/chart?range=` | Price history + indicators (`1D`, `1W`, `1M`, `3M`, `YTD`, `1Y`, `5Y`, `MAX`) |
 
 ## Continuous Integration
 
@@ -102,6 +110,13 @@ branch, or update the workflow's branch filters) and Actions will run automatica
 No secrets or extra configuration are required.
 
 ## Design notes
+
+- Stock data comes from Yahoo Finance's public (unofficial, keyless) endpoints
+  via the backend, which avoids browser CORS limits and caches responses
+  (30s for charts, 5 min for search). It is fine for personal use but has no
+  uptime guarantee; `createStockService` is the one place to swap in a paid
+  provider. Each range fetches extra history so MA(200) is populated at the
+  left edge of the chart. Tests inject a fake `fetch` and never hit the network.
 
 - The backend uses a small in-memory `TaskStore` (see `server/src/taskStore.js`)
   rather than a database, so the whole pipeline runs with zero external services

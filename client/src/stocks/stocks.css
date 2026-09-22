@@ -1,0 +1,315 @@
+.stocks-page {
+  --s-bg: #000;
+  --s-surface: #0b0d12;
+  --s-raised: #151922;
+  --s-border: #1f2430;
+  --s-text: #f3f4f6;
+  --s-muted: #9ca3af;
+  --s-up: #22c55e;
+  --s-down: #ef4444;
+
+  min-height: calc(100vh - 44px);
+  padding: 1rem 1.25rem 1.5rem;
+  background: var(--s-bg);
+  color: var(--s-text);
+  color-scheme: dark;
+}
+
+/* Header: quote on the left, search on the right */
+.stocks-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--s-border);
+}
+
+.quote h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.quote-price {
+  font-weight: 600;
+}
+
+.quote-change.up {
+  color: var(--s-up);
+}
+
+.quote-change.down {
+  color: var(--s-down);
+}
+
+.quote-name {
+  margin: 0.25rem 0 0;
+  color: var(--s-muted);
+  font-size: 0.85rem;
+}
+
+/* Search with autocomplete */
+.stock-search {
+  position: relative;
+  flex: 0 1 340px;
+  min-width: 220px;
+}
+
+.stock-search-icon {
+  position: absolute;
+  top: 50%;
+  left: 0.75rem;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  fill: none;
+  stroke: var(--s-muted);
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+}
+
+.stock-search input {
+  width: 100%;
+  padding: 0.55rem 0.75rem 0.55rem 2.25rem;
+  border: 1px solid var(--s-border);
+  border-radius: 8px;
+  background: var(--s-surface);
+  color: var(--s-text);
+  font: inherit;
+  font-size: 0.95rem;
+}
+
+.stock-search input:focus-visible {
+  outline: 2px solid var(--s-up);
+  outline-offset: 1px;
+}
+
+.stock-search-results {
+  position: absolute;
+  z-index: 10;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  margin: 0;
+  padding: 0.25rem;
+  list-style: none;
+  background: var(--s-raised);
+  border: 1px solid var(--s-border);
+  border-radius: 8px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+.stock-search-results li {
+  display: grid;
+  grid-template-columns: 4.5rem 1fr;
+  column-gap: 0.5rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.stock-search-results li.active {
+  background: rgba(34, 197, 94, 0.12);
+}
+
+.result-symbol {
+  grid-row: span 2;
+  align-self: center;
+  font-weight: 700;
+}
+
+.result-name {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.9rem;
+}
+
+.result-meta {
+  color: var(--s-muted);
+  font-size: 0.75rem;
+}
+
+/* Range selector */
+.range-bar {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.25rem;
+  padding: 0.75rem 0;
+}
+
+.range-bar button {
+  min-width: 2.75rem;
+  padding: 0.35rem 0.6rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--s-text);
+  font: inherit;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.range-bar button:hover {
+  background: var(--s-raised);
+}
+
+.range-bar button.active {
+  background: var(--s-up);
+  color: #000;
+}
+
+.range-bar button:focus-visible {
+  outline: 2px solid var(--s-up);
+  outline-offset: 2px;
+}
+
+.stocks-error {
+  margin: 0 0 0.75rem;
+  padding: 0.6rem 0.8rem;
+  border-radius: 6px;
+  background: rgba(239, 68, 68, 0.12);
+  color: #fca5a5;
+}
+
+/* Indicator sidebar + chart */
+.stocks-body {
+  display: grid;
+  grid-template-columns: 190px 1fr;
+  border-top: 1px solid var(--s-border);
+}
+
+.indicator-panel {
+  padding: 0.75rem 1rem 0.75rem 0;
+  border-right: 1px solid var(--s-border);
+}
+
+.indicator-panel h2 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.indicator-time {
+  margin: 0.2rem 0 0.75rem;
+  color: var(--s-muted);
+  font-size: 0.75rem;
+}
+
+.indicator-panel dl {
+  margin: 0;
+}
+
+.indicator-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.35rem 0;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.indicator-row dt {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-weight: 700;
+}
+
+.indicator-row dd {
+  margin: 0;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.chart-area {
+  position: relative;
+  /* Stay in the wide column even before the indicator panel first renders. */
+  grid-column: 2;
+  min-width: 0;
+}
+
+.stock-chart {
+  height: 640px;
+}
+
+.chart-labels span {
+  position: absolute;
+  z-index: 2;
+  left: 0.75rem;
+  color: var(--s-muted);
+  font-size: 0.75rem;
+  pointer-events: none;
+}
+
+.chart-labels span:first-child {
+  top: 0.5rem;
+}
+
+/* Sits at the top of the RSI pane (150px pane + ~26px time axis). */
+.chart-labels .rsi-label {
+  bottom: 160px;
+}
+
+.chart-loading {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.55);
+  color: var(--s-muted);
+}
+
+.stocks-footnote {
+  margin: 0.75rem 0 0;
+  color: var(--s-muted);
+  font-size: 0.75rem;
+}
+
+@media (max-width: 720px) {
+  .stocks-page {
+    padding: 0.75rem 1rem 1rem;
+  }
+
+  .stock-search {
+    flex-basis: 100%;
+  }
+
+  .range-bar {
+    justify-content: flex-start;
+  }
+
+  .stocks-body {
+    grid-template-columns: 1fr;
+  }
+
+  .chart-area {
+    grid-column: 1;
+  }
+
+  .indicator-panel {
+    border-right: none;
+    border-bottom: 1px solid var(--s-border);
+    padding-right: 0;
+  }
+
+  .indicator-panel dl {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 1.25rem;
+  }
+
+  .stock-chart {
+    height: 480px;
+  }
+}
