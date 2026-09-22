@@ -98,6 +98,17 @@ describe('TaskStore', () => {
       const created = store.create({ title: 'Original' });
       expect(() => store.update(created.id, { title: '' })).toThrow(ValidationError);
     });
+
+    test('clears the description when given null', () => {
+      const created = store.create({ title: 'Original', description: 'Old' });
+      expect(store.update(created.id, { description: null }).description).toBe('');
+    });
+
+    test('rejects a non-boolean completed value', () => {
+      const created = store.create({ title: 'Original' });
+      expect(() => store.update(created.id, { completed: 'false' })).toThrow(ValidationError);
+      expect(store.getById(created.id).completed).toBe(false);
+    });
   });
 
   describe('toggle', () => {

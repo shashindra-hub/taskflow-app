@@ -8,7 +8,7 @@
     "dev": "node src/server.js",
     "start": "node src/server.js",
     "lint": "eslint src tests",
-    "test": "cross-env NODE_ENV=test node --experimental-vm-modules node_modules/.bin/jest --coverage"
+    "test": "cross-env NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest --coverage"
   },
   "dependencies": {
     "cors": "^2.8.5",

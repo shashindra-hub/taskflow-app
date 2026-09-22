@@ -10,6 +10,7 @@ export default function App() {
   const [filter, setFilter] = useState('all');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [actionError, setActionError] = useState('');
 
   const loadTasks = useCallback(async (status) => {
     setLoading(true);
@@ -36,7 +37,14 @@ export default function App() {
   }
 
   async function handleToggle(id) {
-    const updated = await api.toggleTask(id);
+    setActionError('');
+    let updated;
+    try {
+      updated = await api.toggleTask(id);
+    } catch (err) {
+      setActionError(err.message);
+      return;
+    }
     setTasks((prev) => {
       if (filter === 'all') {
         return prev.map((t) => (t.id === id ? updated : t));
@@ -49,7 +57,13 @@ export default function App() {
   }
 
   async function handleDelete(id) {
-    await api.deleteTask(id);
+    setActionError('');
+    try {
+      await api.deleteTask(id);
+    } catch (err) {
+      setActionError(err.message);
+      return;
+    }
     setTasks((prev) => prev.filter((t) => t.id !== id));
   }
 
@@ -70,6 +84,11 @@ export default function App() {
         {error && (
           <p className="error" role="alert" data-testid="load-error">
             {error}
+          </p>
+        )}
+        {actionError && (
+          <p className="error" role="alert" data-testid="action-error">
+            {actionError}
           </p>
         )}
         {!loading && !error && (

@@ -81,12 +81,15 @@ export class TaskStore {
 
     if (updates.title !== undefined) validateTitle(updates.title);
     if (updates.description !== undefined) validateDescription(updates.description);
+    if (updates.completed !== undefined && typeof updates.completed !== 'boolean') {
+      throw new ValidationError('Completed must be a boolean.');
+    }
 
     const updated = {
       ...existing,
       ...(updates.title !== undefined ? { title: updates.title.trim() } : {}),
-      ...(updates.description !== undefined ? { description: updates.description.trim() } : {}),
-      ...(updates.completed !== undefined ? { completed: Boolean(updates.completed) } : {}),
+      ...(updates.description !== undefined ? { description: (updates.description ?? '').trim() } : {}),
+      ...(updates.completed !== undefined ? { completed: updates.completed } : {}),
       updatedAt: new Date().toISOString(),
     };
     this.tasks.set(id, updated);
