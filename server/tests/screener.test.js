@@ -165,7 +165,7 @@ describe('formatMessage', () => {
         'Sell Oct 23 $93 put · Δ0.30 · 31 DTE',
         'Bid $2.00 → $200 on $9,300 (2.1%)',
         '',
-        'TSLA $380.00 ▲1.2% · not red · above EMA50 · RSI 60',
+        'TSLA $380.00 ▲1.2% · green · above EMA50 · RSI 60',
         'HOOD $95.00 ▼2.1% · put 1.4%',
         'SOXL: data unavailable',
         '',

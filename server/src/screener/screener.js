@@ -110,7 +110,7 @@ function headline({ symbol, technicals: t }) {
 
 function failedChecks({ technicals: t, put }, rules) {
   const reasons = [];
-  if (!t.redDay) reasons.push('not red');
+  if (!t.redDay) reasons.push(t.changePercent > 0 ? 'green' : 'flat');
   if (!t.belowEma) reasons.push(`above EMA${rules.emaPeriod}`);
   if (!t.rsiInRange) reasons.push(`RSI ${t.rsi === null ? 'n/a' : t.rsi.toFixed(0)}`);
   if (!put) reasons.push('no put quote');
