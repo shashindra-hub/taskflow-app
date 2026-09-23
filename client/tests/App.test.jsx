@@ -81,4 +81,32 @@ describe('App', () => {
     await waitFor(() => expect(screen.getAllByTestId('task-item')).toHaveLength(1));
     expect(api.deleteTask).toHaveBeenCalledWith('1');
   });
+
+  test('toggling checks the box immediately, before the server responds', async () => {
+    const user = userEvent.setup();
+    let respond;
+    api.toggleTask.mockReturnValue(new Promise((resolve) => (respond = resolve)));
+    render(<App />);
+    await waitFor(() => expect(screen.getAllByTestId('task-item')).toHaveLength(2));
+
+    await user.click(screen.getAllByTestId('task-toggle')[0]);
+
+    expect(screen.getAllByTestId('task-toggle')[0]).toBeChecked();
+    expect(screen.getByTestId('active-count')).toHaveTextContent('0 task(s) remaining');
+    respond({ ...sampleTasks[0], completed: true });
+    await waitFor(() => expect(api.toggleTask).toHaveBeenCalledWith('1'));
+    expect(screen.getAllByTestId('task-toggle')[0]).toBeChecked();
+  });
+
+  test('a failed toggle reverts the checkbox and shows the error', async () => {
+    const user = userEvent.setup();
+    api.toggleTask.mockRejectedValue(new Error('Task not found'));
+    render(<App />);
+    await waitFor(() => expect(screen.getAllByTestId('task-item')).toHaveLength(2));
+
+    await user.click(screen.getAllByTestId('task-toggle')[0]);
+
+    expect(await screen.findByTestId('action-error')).toHaveTextContent('Task not found');
+    expect(screen.getAllByTestId('task-toggle')[0]).not.toBeChecked();
+  });
 });
