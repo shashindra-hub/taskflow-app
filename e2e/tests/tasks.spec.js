@@ -35,6 +35,8 @@ test('toggling a task marks it completed and updates the remaining count', async
   await page.getByTestId('add-task-button').click();
 
   const item = page.getByTestId('task-item').filter({ hasText: title });
+  // Count only once the new task is on screen, or the add may land after we read.
+  await expect(item).toBeVisible();
   const before = await page.getByTestId('active-count').textContent();
   const beforeCount = parseInt(before, 10);
 

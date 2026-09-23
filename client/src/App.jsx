@@ -36,24 +36,25 @@ export default function App() {
     }
   }
 
+  // If a filter is active, a toggled task may need to leave the list.
+  function visibleOnly(list) {
+    if (filter === 'all') return list;
+    return list.filter((t) => (filter === 'active' ? !t.completed : t.completed));
+  }
+
   async function handleToggle(id) {
     setActionError('');
-    let updated;
+    const previous = tasks;
+    // Flip it right away so the checkbox responds to the click (a controlled
+    // checkbox otherwise snaps back until the server answers), then confirm.
+    setTasks(visibleOnly(tasks.map((t) => (t.id === id ? { ...t, completed: !t.completed } : t))));
     try {
-      updated = await api.toggleTask(id);
+      const updated = await api.toggleTask(id);
+      setTasks((prev) => prev.map((t) => (t.id === id ? updated : t)));
     } catch (err) {
+      setTasks(previous);
       setActionError(err.message);
-      return;
     }
-    setTasks((prev) => {
-      if (filter === 'all') {
-        return prev.map((t) => (t.id === id ? updated : t));
-      }
-      // If a filter is active, a toggled task may need to leave the list.
-      return prev
-        .map((t) => (t.id === id ? updated : t))
-        .filter((t) => (filter === 'active' ? !t.completed : t.completed));
-    });
   }
 
   async function handleDelete(id) {

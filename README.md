@@ -109,6 +109,33 @@ To use it: push this project to a GitHub repository (with `main` as the default
 branch, or update the workflow's branch filters) and Actions will run automatically.
 No secrets or extra configuration are required.
 
+## Morning put screener (iMessage)
+
+`server/bin/morning-screener.js` checks a watchlist every weekday at 9:00 AM
+(Mac local time) and texts a summary over iMessage. A stock **matches** when:
+
+1. it's a red day (price below yesterday's close),
+2. it's below its 50-day EMA with RSI(14) between 30 and 50, and
+3. the put nearest 30 DTE and 0.30 delta has a bid of at least 2% of its
+   collateral (strike x 100, i.e. a cash-secured put).
+
+Matches are listed first with the contract to sell; every other stock gets
+one line saying which checks it failed. Market holidays send nothing.
+
+```bash
+npm run screener -- --dry-run                       # print today's message
+scripts/install-screener.sh +15551234567            # schedule (default watchlist)
+scripts/install-screener.sh +15551234567 NVDA,TSLA  # custom watchlist
+launchctl kickstart gui/$(id -u)/com.taskflow.morning-screener   # run now
+scripts/install-screener.sh --uninstall
+```
+
+Needs the Mac on (a sleeping Mac runs the job when it wakes) and Messages
+signed in to iMessage; the first run asks for permission to control Messages.
+The phone number lives only in `~/Library/LaunchAgents`, and the log is at
+`~/Library/Logs/taskflow-screener.log`. Prices and indicators come from Yahoo
+daily bars; option chains and deltas from Cboe's free delayed quotes (~15 min).
+
 ## Design notes
 
 - Stock data comes from Yahoo Finance's public (unofficial, keyless) endpoints
